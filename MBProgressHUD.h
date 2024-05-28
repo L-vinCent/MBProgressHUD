@@ -6,7 +6,7 @@
 
 // This code is distributed under the terms and conditions of the MIT license.
 
-// Copyright © 2009-2020 Matej Bukovinski
+// Copyright © 2009-2016 Matej Bukovinski
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -87,6 +87,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface MBProgressHUD : UIView
 
+/*
+ 设置按钮宽高，抛出点击事件
+ */
+- (void)configureButtonConstraintsWithWidth:(CGFloat)width height:(CGFloat)height actionBlock:(void (^)(void))actionBlock;
 /**
  * Creates a new HUD, adds it to provided view and shows it. The counterpart to this method is hideHUDForView:animated:.
  *

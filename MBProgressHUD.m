@@ -11,10 +11,11 @@
 
 CGFloat const MBProgressMaxOffset = 1000000.f;
 
-static const CGFloat MBDefaultPadding = 4.f;
+static const CGFloat MBDefaultPadding = 15.f;
 static const CGFloat MBDefaultLabelFontSize = 16.f;
 static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
 
+typedef void (^ButtonActionBlock)(void);
 
 @interface MBProgressHUD ()
 
@@ -31,6 +32,7 @@ static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
 @property (nonatomic, weak) NSTimer *minShowTimer;
 @property (nonatomic, weak) NSTimer *hideDelayTimer;
 @property (nonatomic, weak) CADisplayLink *progressObjectDisplayLink;
+@property (nonatomic, copy) ButtonActionBlock actionBlock;
 
 @end
 
@@ -298,6 +300,31 @@ static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
 
 #pragma mark - UI
 
+- (void)configureButtonConstraintsWithWidth:(CGFloat)width height:(CGFloat)height actionBlock:(void (^)(void))actionBlock {
+    // 添加按钮宽度约束
+    NSLayoutConstraint *buttonWidthConstraint = [self.button.widthAnchor constraintEqualToConstant:width];
+    buttonWidthConstraint.priority = UILayoutPriorityRequired;
+    buttonWidthConstraint.active = YES;
+
+    // 添加按钮高度约束
+    NSLayoutConstraint *buttonHeightConstraint = [self.button.heightAnchor constraintEqualToConstant:height];
+    buttonHeightConstraint.priority = UILayoutPriorityRequired;
+    buttonHeightConstraint.active = YES;
+
+    // 添加点击事件方法
+    [self.button addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
+    self.actionBlock = actionBlock;
+}
+
+// 点击按钮触发的方法
+- (void)buttonTapped {
+    if (self.actionBlock) {
+        self.actionBlock();
+    }
+}
+
+
+
 - (void)setupViews {
     UIColor *defaultColor = self.contentColor;
 
@@ -359,6 +386,10 @@ static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
     bottomSpacer.hidden = YES;
     [bezelView addSubview:bottomSpacer];
     _bottomSpacer = bottomSpacer;
+}
+
+-(void )setupHUDAppearance{
+    
 }
 
 - (void)updateIndicators {
@@ -1162,14 +1193,14 @@ static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
 - (void)layoutSubviews {
     [super layoutSubviews];
     // Fully rounded corners
-    CGFloat height = CGRectGetHeight(self.bounds);
-    self.layer.cornerRadius = ceil(height / 2.f);
+//    CGFloat height = CGRectGetHeight(self.bounds);
+//    self.layer.cornerRadius = ceil(height / 2.f);
 }
 
 - (CGSize)intrinsicContentSize {
     // Only show if we have associated control events and a title
     if ((self.allControlEvents == 0) || ([self titleForState:UIControlStateNormal].length == 0))
-		return CGSizeZero;
+        return CGSizeZero;
     CGSize size = [super intrinsicContentSize];
     // Add some side padding
     size.width += 20.f;
@@ -1182,13 +1213,13 @@ static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
     [super setTitleColor:color forState:state];
     // Update related colors
     [self setHighlighted:self.highlighted];
-    self.layer.borderColor = color.CGColor;
+    self.layer.borderColor = UIColor.clearColor.CGColor;
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
-    UIColor *baseColor = [self titleColorForState:UIControlStateSelected];
-    self.backgroundColor = highlighted ? [baseColor colorWithAlphaComponent:0.1f] : [UIColor clearColor];
+//    UIColor *baseColor = [self titleColorForState:UIControlStateSelected];
+//    self.backgroundColor = highlighted ? [baseColor colorWithAlphaComponent:0.1f] : [UIColor clearColor];
 }
 
 @end
