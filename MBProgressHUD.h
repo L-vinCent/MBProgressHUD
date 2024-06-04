@@ -91,6 +91,12 @@ NS_ASSUME_NONNULL_BEGIN
  设置按钮宽高，抛出点击事件
  */
 - (void)configureButtonConstraintsWithWidth:(CGFloat)width height:(CGFloat)height actionBlock:(void (^)(void))actionBlock;
+
+/*
+抛出关闭点击事件,调用此方法会显示 X 按钮
+ */
+-(void)configureCloseButtonWithImage:(UIImage*)image actionBlock:(void (^)(void))actionBlock;
+
 /**
  * Creates a new HUD, adds it to provided view and shows it. The counterpart to this method is hideHUDForView:animated:.
  *
@@ -309,6 +315,8 @@ NS_ASSUME_NONNULL_BEGIN
  * A button that is placed below the labels. Visible only if a target / action is added and a title is assigned..
  */
 @property (strong, nonatomic, readonly) UIButton *button;
+
+@property (strong, nonatomic, readonly) UIButton *closeButton;
 
 @end
 

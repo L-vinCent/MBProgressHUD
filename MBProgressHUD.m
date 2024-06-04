@@ -16,6 +16,7 @@ static const CGFloat MBDefaultLabelFontSize = 16.f;
 static const CGFloat MBDefaultDetailsLabelFontSize = 12.f;
 
 typedef void (^ButtonActionBlock)(void);
+typedef void (^CloseBlock)(void);
 
 @interface MBProgressHUD ()
 
@@ -33,6 +34,7 @@ typedef void (^ButtonActionBlock)(void);
 @property (nonatomic, weak) NSTimer *hideDelayTimer;
 @property (nonatomic, weak) CADisplayLink *progressObjectDisplayLink;
 @property (nonatomic, copy) ButtonActionBlock actionBlock;
+@property (nonatomic, copy) CloseBlock closeBlock;
 
 @end
 
@@ -316,10 +318,36 @@ typedef void (^ButtonActionBlock)(void);
     self.actionBlock = actionBlock;
 }
 
+-(void)configureCloseButtonWithImage:(UIImage*)image actionBlock:(void (^)(void))actionBlock{
+    [_closeButton setHidden:NO];
+    [NSLayoutConstraint activateConstraints:@[
+        [_closeButton.widthAnchor constraintEqualToConstant:24],
+        [_closeButton.heightAnchor constraintEqualToConstant:24]
+    ]];
+    
+//    // 设置按钮的右边距和上边距约束
+    [NSLayoutConstraint activateConstraints:@[
+        [_closeButton.trailingAnchor constraintEqualToAnchor:_bezelView.trailingAnchor constant:-10],
+        [_closeButton.topAnchor constraintEqualToAnchor:_bezelView.topAnchor constant:10]
+    ]];
+    
+    [_closeButton setImage:image forState:UIControlStateNormal];
+    // 添加点击事件方法
+    [_closeButton addTarget:self action:@selector(closeTapped) forControlEvents:UIControlEventTouchUpInside];
+    self.closeBlock = actionBlock;
+}
+
 // 点击按钮触发的方法
 - (void)buttonTapped {
     if (self.actionBlock) {
         self.actionBlock();
+    }
+}
+
+// 点击按钮触发的方法
+- (void)closeTapped {
+    if (self.closeBlock) {
+        self.closeBlock();
     }
 }
 
@@ -367,8 +395,12 @@ typedef void (^ButtonActionBlock)(void);
     button.titleLabel.font = [UIFont boldSystemFontOfSize:MBDefaultDetailsLabelFontSize];
     [button setTitleColor:defaultColor forState:UIControlStateNormal];
     _button = button;
-
-    for (UIView *view in @[label, detailsLabel, button]) {
+    
+    UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [closeButton setHidden:YES];
+    _closeButton = closeButton;
+    
+    for (UIView *view in @[label, detailsLabel, button,closeButton]) {
         view.translatesAutoresizingMaskIntoConstraints = NO;
         [view setContentCompressionResistancePriority:998.f forAxis:UILayoutConstraintAxisHorizontal];
         [view setContentCompressionResistancePriority:998.f forAxis:UILayoutConstraintAxisVertical];
