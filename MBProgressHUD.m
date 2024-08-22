@@ -318,7 +318,7 @@ typedef void (^CloseBlock)(void);
     self.actionBlock = actionBlock;
 }
 
--(void)configureCloseButtonWithImage:(UIImage*)image actionBlock:(void (^)(void))actionBlock{
+-(UIButton *)configureCloseButtonWithImage:(UIImage*)image actionBlock:(void (^)(void))actionBlock{
     [_closeButton setHidden:NO];
     [NSLayoutConstraint activateConstraints:@[
         [_closeButton.widthAnchor constraintEqualToConstant:24],
@@ -335,6 +335,8 @@ typedef void (^CloseBlock)(void);
     // 添加点击事件方法
     [_closeButton addTarget:self action:@selector(closeTapped) forControlEvents:UIControlEventTouchUpInside];
     self.closeBlock = actionBlock;
+    return _closeButton;
+
 }
 
 // 点击按钮触发的方法
@@ -397,6 +399,7 @@ typedef void (^CloseBlock)(void);
     _button = button;
     
     UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    
     [closeButton setHidden:YES];
     _closeButton = closeButton;
     

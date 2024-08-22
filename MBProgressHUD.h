@@ -95,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
 抛出关闭点击事件,调用此方法会显示 X 按钮
  */
--(void)configureCloseButtonWithImage:(UIImage*)image actionBlock:(void (^)(void))actionBlock;
+-(UIButton *)configureCloseButtonWithImage:(UIImage*)image actionBlock:(void (^)(void))actionBlock;
 
 /**
  * Creates a new HUD, adds it to provided view and shows it. The counterpart to this method is hideHUDForView:animated:.
